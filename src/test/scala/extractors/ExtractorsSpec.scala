@@ -32,6 +32,10 @@ class ExtractorsSpec extends FlatSpec with Logging  {
     def unapply(user:FreeUser):Boolean = user.upgradeProbablity > 0.75
   }
 
+  object premiumCandidate {
+    def unapply(user: FreeUser): Boolean = user.upgradeProbablity > 0.75
+  }
+
   "blah " should " return blah" in {
     val testList = List(SimpleUser("fred", "flintstone", 40), SimpleUser("wilma", "flintstone", 36), SimpleUser("barney", "flintstone", 39))
 
@@ -50,5 +54,23 @@ class ExtractorsSpec extends FlatSpec with Logging  {
     logger.info("greeting: "+greeting(FreeUser("fred", 46, 0.90d)))
 
     val user1:User = FreeUser("daniel", 2500, 0.8d)
+  }
+
+  "boolean unapply" should "be something" in {
+    val user: User = new FreeUser("Daniel", 2500, 0.8d)
+    user match {
+      case freeUser @ premiumCandidate() => logger.info("premiumCandidate: "+freeUser)
+      case _ => logger.info("default")
+    }
+  }
+
+  "a stream" should "evaluate lazily" in {
+    val xs = 58 #:: 43 #:: 93 #:: Stream.empty
+    val result = xs match {
+//      case first #:: second #:: _ => first - second // head #:: tail == #::(head,tail)
+      case #::(first, #::(second, _)) => first - second
+      case _ => -1
+    }
+    logger.info("result: "+result)
   }
 }
