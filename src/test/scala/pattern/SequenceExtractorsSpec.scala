@@ -1,4 +1,4 @@
-package extractors
+package pattern
 
 import org.apache.logging.log4j.scala.Logging
 import org.scalatest._
